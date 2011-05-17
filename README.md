@@ -19,7 +19,7 @@ A lightweight JavaScript class for drawing line graphs in a canvas element, that
 
 ## Concept behind Graph.js
 
-For a project I was working on I needed to add a simple line graph, and while there are plenty of good options out there, most of them were to bloated for my needed, or depended on some library I wasn't using — besides I love creating my own components, getting my hands dirty. I've created this simplified lightweight version as a result, it doesn't do any DOM manipulation so if you want labels — you'll need to add them yourselves. To help you do this, I have included a couple methods, demonstrated in the (poorly written) vanilla JavaScript examples.
+For a project I was working on I needed to add a simple line graph, and while there are plenty of good options out there, most of them were to bloated for my needs, or depended on some library I wasn't using — besides I love creating my own components, getting my hands dirty. I've created this simplified lightweight version as a result, it doesn't do any DOM manipulation so if you want labels — you'll need to add them yourselves. To help you do this, I have included a couple methods, demonstrated in the (poorly written) vanilla JavaScript examples.
 
 There is also no detection for canvas support, so old fashioned browsers will not work by default and there is no alternative. You might be able to get them to work, at least for IE, with the `excanvas` project. But I have not tried this myself.
 
