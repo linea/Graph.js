@@ -13,10 +13,11 @@ A lightweight JavaScript class for drawing line graphs in a canvas element, that
 
 ## To Do
 
- * Add horizontal grid lines (with `y` label support in `getGridAxes()`)
- * Add support for complex data points ( {'value': 123, 'custom-thing': 123} )
+ * Add support for horizontal grid lines (include `y` label support in `getGridAxes()`)
+ * Add support for data points with meta data ( `{'value': 123, 'custom-thing': 'abc'}` )
+ * Add support for a `border` (within the canvas object) Also add `borderColor`
 
-## Idea behind Graph.js
+## Concept behind Graph.js
 
 For a project I was working on I needed to add a simple line graph, and while there are plenty of good options out there, most of them were to bloated for my needed, or depended on some library I wasn't using — besides I love creating my own components, getting my hands dirty. I've created this simplified lightweight version as a result, it doesn't do any DOM manipulation so if you want labels — you'll need to add them yourselves. To help you do this, I have included a couple methods, demonstrated in the (poorly written) vanilla JavaScript examples.
 
@@ -24,7 +25,7 @@ There is also no detection for canvas support, so old fashioned browsers will no
 
 ## Example
 
-Example from example/basic.js:
+Example from examples/sample1_basic.html:
 
 	<script type="text/javascript" src="graph.min.js"></script>
 	<script type="text/javascript">
@@ -56,6 +57,14 @@ Parameters:
 
 * `dataPoints`: An array filled with numbers.
 * `color`: A textual representation of a color (e.g. `red`, `#ff0000`, `rgb(255,0,0)`), defaults to the 'default' color.
+
+#### draw()
+
+Draw the graph for the first time, useful if you didn't specify that the graph immediately draws in the constructor.
+
+#### redraw()
+
+Redraw the graph, a very useful method if you add/update/deleted data.
 
 #### options['name']	= value;
 
@@ -123,13 +132,7 @@ The options are available in a simple array form on the graph, you can overwrite
 	graph.options['lineColor']		= "#ff0059";
 	// Which color is the line (and bullets/bullet outside)
 
-#### draw()
-
-Draw the graph for the first time, useful if you didn't specify that the graph immediately draws in the constructor.
-
-#### redraw()
-
-Redraw the graph, a very useful method if you add/update/deleted data. 
+### Methods you can use to extend Graph functionality.
 
 #### getClosestBullet( mouseX[, magnify] )
 
