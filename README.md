@@ -147,6 +147,14 @@ Parameters:
 
 Returns an object, containing positions for both the `x` and `y` gridlines. The current version does not (yet) contain `y` gridlines so it will be an empty array, the `x` will be an array filled with objects containing the `x`,`y` position where you can put your label. A sample can be found in the examples directory, sample5_labels.html
 
+#### getMinimum()
+
+Returns the lowest value from all available data points. Useful for multiple things, like manually changing the `minValue` option.
+
+#### getMaximum()
+
+Returns the highest value from all available data points. Useful for multiple things, like manually changing the `maxValue` option.
+
 ## Minified with YUI! Compressor
 
 This is the simple way this version has been minified, in case you were wondering. Also a note for myself so I can make it consistent throughout versions.
