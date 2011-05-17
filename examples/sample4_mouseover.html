@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Graph.js</title>
+		<script type="text/javascript" src="../graph.min.js"></script>
+		<script type="text/javascript">
+		var graph, canvas;	// Make the graph object available globally.
+		
+		function init() {
+			
+			// Get the Canvas element.
+			canvas		= document.getElementById( "canvas_object" );
+			
+			// Create a Graph with data.
+			// First argument: Canvas HTML Node
+			// Second argument: Optional: Array of data points
+			// Third argument: Optional: Immediately draw the graph
+			graph		= new Graph( canvas, [10,20,50,20,30,60,10], true);
+			
+			
+			// To show the hover bubble, attach these events to the Canvas object.
+			canvas.onmouseout	= function() {
+				document.getElementById("bubble").style.display = "none"; // Hide the bullet.
+				graph.redraw(); // Redraw, to hide the magnified bullet point.
+			};
+			
+			
+			canvas.onmousemove	= function(e) {
+				var e			= e || window.event; // The Event
+				var mouseX		= e.clientX; // The mouse X coordinate.
+				var difference	= graph.options['padding'] + canvas.parentNode.offsetLeft; // The padding (where the graph starts within the canvas) + The left offset from the container.
+				var bulletX		= mouseX - difference; // This is needed to get a relative X, which we can compare to our bullet points.
+				
+				// Now to get the closest bullet, we have a method on our Graph object.
+				// It takes 2 arguments, the first being a X coordinate and that is required.
+				// The second is optional, true or false, to magnify the bullet that is 'active'.
+				var closest		= graph.getClosestBullet( bulletX, true ); 
+				if( !closest ) {
+					// No close bullet was found (probably mouse-ing outside the graph)
+					document.getElementById("bubble").innerHTML		= "n/a";
+					return false;
+				}
+				
+				// Set the HTML for the bubble with the value.
+				document.getElementById("bubble").innerHTML		= closest.value;
+				
+				// Show it at the right coordinates.
+				document.getElementById("bubble").style.display		="block"; // Make it visible.
+				document.getElementById("bubble").style.top			= closest.y + "px"; // Top position of bullet
+				document.getElementById("bubble").style.left		= closest.x + "px"; // Left position of bullet
+				document.getElementById("bubble").style.marginTop	= "-35px"; // Negative top of bubble height + little spacing 
+				document.getElementById("bubble").style.marginLeft	= 0 - ( document.getElementById("bubble").clientWidth / 2 ) + "px"; // Negative margin left of 50% bubble's width.
+				
+			}
+		};
+		</script>
+		<style type="text/css" media="screen">
+			.container { 
+				position: relative;
+				margin: 50px auto 0;
+				width: 800px;
+			}
+			
+			#bubble { 
+				position: absolute;
+				display: none;
+				top: 50px;
+				left: 100px;
+				padding: 4px 6px;
+				background: #000;
+				color: #fff;
+				background: rgba(0,0,0,0.6);
+				box-shadow: 1px 1px 3px #5a5a5a;
+				-moz-box-shadow: 1px 1px 3px #5a5a5a;
+				-webkit-box-shadow: 1px 1px 3px #5a5a5a;
+				border-radius: 5px;
+				-moz-border-radius: 5px;
+				-webkit-border-radius: 5px;
+				font-size: 11px;
+				font-family: "Lucida Grande", arial, sans-serif;
+				user-select: none;
+				-moz-user-select: none;
+				-webkit-user-select: none;
+				cursor: default;
+				
+				transition: top 0.2s ease, left 0.2s ease;
+				-moz-transition: top 0.2s ease, left 0.2s ease;
+				-webkit-transition: top 0.2s ease, left 0.2s ease;
+			}
+		</style>
+	</head>
+	<body onload="init();">
+		
+		<div class="container">
+			<canvas id="canvas_object" width="800" height="400">
+				Your browser does not support the HTML Canvas object, so... no graph for you!
+			</canvas>
+			
+			<!-- This empty div is needed for your bubble -->
+			<div id="bubble"></div>
+		</div>
+		
+		
+	</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Graph.js</title>
+		<script type="text/javascript" src="../graph.min.js"></script>
+		<script type="text/javascript">
+		var graph, canvas;	// Make the graph object available globally.
+		
+		function init() {
+			
+			// Get the Canvas element.
+			canvas		= document.getElementById( "canvas_object" );
+			
+			// Create a Graph with data.
+			// First argument: Canvas HTML Node
+			// Second argument: Optional: Array of data points
+			// Third argument: Optional: Immediately draw the graph
+			graph		= new Graph( canvas );
+			
+			
+			// Overwrite styles in the options array for the graph object. 
+			// These are ALL options, default style is visible in 'sample1_basic.html'.
+			graph.options['minValue']		= "auto"; // Will automatically get the lowest number from your data array.
+			graph.options['maxValue']		= "auto"; // Will automatically get the highest number from your data array.
+			graph.options['padding']		= 50; // The padding from the canvas border to where the grid/graph begins.
+			graph.options['spacing']		= 20; // The spacing for top/bottom, only used if minValue/maxValue is auto and could be 0. 
+												  // It helps prevent lines from being EXACTLY ON the top/bottom line of graph but adds some spacing.
+			graph.options['background']		= ["#fff","#eee","#ddd"]; // Background, either string ('#fff', or 'red') or array with strings representing colors for a gradient.
+			graph.options['grid']			= true; // Enable the background lines/grid. Only Vertical and bottom line support for now.
+			graph.options['gridSize']		= 0.2; // The size of the background lines/grid. Can be half as well (0.5)
+			graph.options['gridColor']		= "rgba(0, 0, 0, 0.3 )"; // The color for the background lines/grid.
+			graph.options['gridShadow']		= false; // Give the grid a small shadow as well for depth effect.
+			graph.options['bulletSize']		= 3; // The radius of the bullet points.
+			graph.options['bulletColor']	= "#000"; // The inside color of the bullet, only visible if you have 'bulletFill' enabled.
+			graph.options['shadowColor']	= "rgba(0, 0, 0, 0.6)"; // The color for all shadows (grid/bullet/etc)
+			graph.options['fill']			= false; // Do you want to fill the data from line to bottom (nice effect if you use an alpha color)
+			graph.options['lineSize']		= 2; // The size of the line.
+			graph.options['lineCurve']		= false; // Do you want the line to curve, or not?
+			graph.options['lineColor']		= "#ff0059"; // Which color is the line (and bullets/bullet outside)
+			
+			
+			// Add a line of data points to the graph.
+			graph.addLine( [10,50,20,20,70,30,20,45] );
+			
+			// Add the second line, with a different line color.
+			graph.addLine( [90,80,30,50,60,80,90,100], "#1c6eff" );
+			
+			// Draw the graph.
+			graph.draw();
+		};
+		</script>
+		<style type="text/css" media="screen">
+			.container { 
+				position: relative;
+				margin: 50px auto 0;
+				width: 800px;
+				
+			}
+		</style>
+	</head>
+	<body onload="init();">
+		
+		<div class="container">
+			<canvas id="canvas_object" width="800" height="400">
+				Your browser does not support the HTML Canvas object, so... no graph for you!
+			</canvas>
+		</div>
+		
+		Note: Multi-line currently conflicts a little bit if you add a hover bubble (sample4_mouseover.html), so right now if you do use both together the bubble will only respond to the first data line (which will be the one on the 'back')
+	</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Graph.js</title>
+		<script type="text/javascript" src="../graph.min.js"></script>
+		<script type="text/javascript">
+		var graph, canvas;	// Make the graph object available globally.
+		
+		function init() {
+			
+			// Get the Canvas element.
+			canvas		= document.getElementById( "canvas_object" );
+			
+			// Create a Graph with data.
+			// First argument: Canvas HTML Node
+			// Second argument: Optional: Array of data points
+			// Third argument: Optional: Immediately draw the graph
+			graph		= new Graph( canvas, [10,20,50,20,30,60,10], true);
+		};
+		</script>
+		<style type="text/css" media="screen">
+			.container { 
+				position: relative;
+				margin: 50px auto 0;
+				width: 800px;
+			}
+		</style>
+	</head>
+	<body onload="init();">
+		
+		<div class="container">
+			<canvas id="canvas_object" width="800" height="400">
+				Your browser does not support the HTML Canvas object, so... no graph for you!
+			</canvas>
+		</div>
+	</body>
+</html>
