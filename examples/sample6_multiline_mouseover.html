@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Graph.js</title>
+		<script type="text/javascript" src="../graph.js"></script>
+		<script type="text/javascript">
+		var graph, canvas;	// Make the graph object available globally.
+		
+		function init() {
+			
+			// Get the Canvas element.
+			canvas		= document.getElementById( "canvas_object" );
+			
+			// Create a Graph with data.
+			// First argument: Canvas HTML Node
+			// Second argument: Optional: Array of data points
+			// Third argument: Optional: Immediately draw the graph
+			graph		= new Graph( canvas );
+			graph.options['fill']	= false;
+			
+			// Add a line of data points to the graph.
+			graph.addLine( [50,60,45,75,55,60,45], "pink" );
+			
+			// Add the second line, with a different line color.
+			graph.addLine( [30,10,25,30,15,5,10], "lightgreen" );
+			
+			// Draw the graph.
+			graph.draw();
+			
+			
+			// To show the hover bubble, attach these events to the Canvas object.
+			canvas.onmouseout	= function() {
+				document.getElementById("bubble").style.display = "none"; // Hide the bullet.
+				graph.redraw(); // Redraw, to hide the magnified bullet point.
+			};
+			
+			
+			canvas.onmousemove	= function(e) {
+				var e			= e || window.event; // The Event
+				var mouseX		= e.clientX; // The mouse X coordinate.
+				var difference	= graph.options['padding'] + canvas.parentNode.offsetLeft; // The padding (where the graph starts within the canvas) + The left offset from the container.
+				var bulletX		= mouseX - difference; // This is needed to get a relative X, which we can compare to our bullet points.
+				
+				// Now to get the closest bullet, we have a method on our Graph object.
+				// It takes 2 arguments, the first being a X coordinate and that is required.
+				// The second is optional, true or false, to magnify the bullet that is 'active'.
+				var closest		= graph.getClosestBullet( bulletX, true ); 
+				if( !closest || closest.length == 0 ) {
+					// No close bullet was found (probably mouse-ing outside the graph)
+					document.getElementById("bubble").innerHTML		= "n/a";
+					return false;
+				}
+				
+				// Set the HTML for the bubble with the value.
+				
+				var bubble		= document.getElementById("bubble");
+				bubble.innerHTML	= ( closest.length ? "" : closest.value );
+
+				if( closest.length ) {
+					var bubbleY	= 0;
+					for( var i = 0; i < closest.length; i++ ) {
+						bubble.innerHTML		+= "Line "+i + ": " + closest[i].value + "<br />";
+						bubbleY	+= closest[i].y;
+					}
+					
+					bubbleY		= ( bubbleY / closest.length );
+				} else {
+					var bubbleY		= closest.y;
+				}
+				
+				// Show it at the right coordinates.
+				bubble.style.display	="block"; // Make it visible.
+				bubble.style.top		= bubbleY + "px"; // Top position of bullet
+				bubble.style.left		= closest[0].x + "px"; // Left position of bullet
+				bubble.style.marginTop	= "-30px"; // Negative top of bubble height + little spacing 
+				bubble.style.marginLeft	= 0 - ( document.getElementById("bubble").clientWidth / 2 ) + "px"; // Negative margin left of 50% bubble's width.
+			}
+		};
+		</script>
+		<style type="text/css" media="screen">
+			.container { 
+				position: relative;
+				margin: 50px auto 0;
+				width: 800px;
+			}
+			
+			#bubble { 
+				position: absolute;
+				display: none;
+				top: 50px;
+				left: 100px;
+				padding: 4px 6px;
+				background: #000;
+				color: #fff;
+				background: rgba(0,0,0,0.6);
+				box-shadow: 1px 1px 3px #5a5a5a;
+				-moz-box-shadow: 1px 1px 3px #5a5a5a;
+				-webkit-box-shadow: 1px 1px 3px #5a5a5a;
+				border-radius: 5px;
+				-moz-border-radius: 5px;
+				-webkit-border-radius: 5px;
+				font-size: 11px;
+				font-family: "Lucida Grande", arial, sans-serif;
+				user-select: none;
+				-moz-user-select: none;
+				-webkit-user-select: none;
+				cursor: default;
+				
+				transition: top 0.2s ease, left 0.2s ease;
+				-moz-transition: top 0.2s ease, left 0.2s ease;
+				-webkit-transition: top 0.2s ease, left 0.2s ease;
+			}
+		</style>
+	</head>
+	<body onload="init();">
+		
+		<div class="container">
+			<canvas id="canvas_object" width="800" height="400">
+				Your browser does not support the HTML Canvas object, so... no graph for you!
+			</canvas>
+			
+			<!-- This empty div is needed for your bubble -->
+			<div id="bubble"></div>
+		</div>
+		
+		
+	</body>
+</html>

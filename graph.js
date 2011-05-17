@@ -541,52 +541,66 @@ Graph.prototype.getGridAxes			= function() {
 // Get the closet bullet by the X coordinate. Right now only works
 // for the 1st / primary data line.
 Graph.prototype.getClosestBullet	= function( nearX, magnify ) {
-	var bullets		= this.lines[0]['bullets'];
-	var length		= bullets.length;
-	var closest		= false;
-	var distance	= this.width / ( length - 1 );
+	var results		= [];
 	var magnify		= magnify === false ? false : true;
-	
 	
 	// If we change the appearance of the bullet, redraw first.
 	if( magnify ) {
 		this.redraw();
 	}
 	
-	// Find the bullet!
-	for( var carrot = 0; carrot < length; carrot++ ) {
-		var bullet		= bullets[carrot];
-		var previous	= carrot == 0 ? 0 : bullet.x - distance;
-		var half		= Math.floor( (bullet.x-previous) / 2 ) - ( this.options['padding'] / 2 );
+	// Loop through all the lines.
+	for( var lineIndex = 0; lineIndex < this.lines.length; lineIndex++ ) {
+		var bullets		= this.lines[lineIndex]['bullets'];
+		var length		= bullets.length;
+		var closest		= false;
+		var distance	= this.width / ( length - 1 );
 		
-		if( nearX < previous || nearX > bullet.x ) {
-			continue; // not it.
+		// Find the bullet!
+		for( var carrot = 0; carrot < length; carrot++ ) {
+			var bullet		= bullets[carrot];
+			var previous	= carrot == 0 ? 0 : bullet.x - distance;
+			var half		= Math.floor( (bullet.x-previous) / 2 ) - ( this.options['padding'] / 2 );
+			
+			if( nearX < previous || nearX > bullet.x ) {
+				continue; // not it.
+			}
+
+			if( nearX <= ( previous + half ) ) {
+				closest		= carrot == 0 ? bullet : bullets[carrot-1];
+				break;
+			} else {
+				closest		= bullet;
+				break;
+			}
 		}
 		
-		if( nearX <= ( previous + half ) ) {
-			closest		= carrot == 0 ? bullet : bullets[carrot-1];
-			break;
-		} else {
-			closest		= bullet;
-			break;
+		// Push the closest to the results.
+		results.push(closest);
+		
+		// Set the fill style.
+		this.context.strokeStyle	= this.parseColor( this.lines[lineIndex]['color'] == "default" ? this.options['lineColor'] : this.lines[lineIndex]['color'] );
+		this.context.fillStyle		= this.options['bulletFill'] ? this.parseColor( this.options['bulletColor'] ) : this.context.strokeStyle;
+
+		// If we want to magnify, simply draw a bigger bullet!
+		if( magnify ) {
+			this.context.beginPath();
+			this.context.arc( closest.x, closest.y, (this.options['bulletSize']*1.4), 0, Math.PI * 2, false);
+			this.context.closePath();
+			this.context.fill();
+
+			if( this.options['bulletFill'] )
+				this.context.stroke();
 		}
 	}
 	
-	// Set the fill style.
-	this.context.fillStyle		= this.options['bulletFill'] ? this.parseColor( this.options['bulletColor'] ) : this.context.strokeStyle;
-	
-	// If we want to magnify, simply draw a bigger bullet!
-	if( magnify ) {
-		this.context.beginPath();
-		this.context.arc( closest.x, closest.y, (this.options['bulletSize']*1.4), 0, Math.PI * 2, false);
-		this.context.closePath();
-		this.context.fill();
-		
-		if( this.options['bulletFill'] )
-			this.context.stroke();
+	if( results.length == 0 ) {
+		return [];
+	} else if ( results.length == 1 ) {
+		return results[0];
 	}
 	
-	return closest;
+	return results;
 };
 
 
