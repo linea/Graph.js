@@ -6,7 +6,7 @@ A lightweight JavaScript class for drawing line graphs in a canvas element, that
 
 ## Features
   
- * Easily configurable / theme support
+ * Highly (and easily) configurable line graph.
  * Multiple data lines in different colors
  * Optionally add meta-data per data point
  * Additional methods to add functionality (e.g. mouseover bubble, html labels)
@@ -15,8 +15,6 @@ A lightweight JavaScript class for drawing line graphs in a canvas element, that
 ## To Do
 
  * Add support for horizontal grid lines (include `y` label support in `getGridAxes()`)
- * Add support for data points with meta data ( `{'value': 123, 'custom-thing': 'abc'}` )
- * Add support for a `border` (within the canvas object) Also add `borderColor`
 
 ## Concept behind Graph.js
 
