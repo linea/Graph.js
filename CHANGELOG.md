@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.3 - Released [not yet]
+
+ * Fixed: when the shadow was enabled, the line-filling also had a shadow making it darker than it should be.
+ * Added: new option: `options['gridDotted']` to make the grid lines dotted.
+ * Added: new option: `options['axisSize']` to specify the axis line size. (value 'auto' to use Grid setting)
+ * Added: new option: `options['axisColor']` to specify the axis line color. (value 'auto' to use Grid setting)
+ * Added: new option: `options['axisShadow']` to give the axis line a shadow. (value 'auto' to use Grid setting)
+
 ## v0.2 - Released May 18th, 2011
 
  * Added: new sample files demonstrating some of the changes.

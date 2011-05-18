@@ -23,8 +23,12 @@ function Graph( canvas, data, draw ) {
 		'background':	["#4E87B5","#86A6C1"],
 		'grid':			true,
 		'gridSize':		1,
-		'gridColor':	"rgba(255, 255, 255, 0.4 )",
+		'gridColor':	"rgba(255, 255, 255, 0.6 )",
 		'gridShadow':	true,
+		'gridDotted':	true,
+		'axisSize':		"auto",
+		'axisColor':	"auto",
+		'axisShadow':	"auto",
 		'bullets':		true,
 		'bulletSize':	6,
 		'bulletColor':	"#000",
@@ -32,7 +36,7 @@ function Graph( canvas, data, draw ) {
 		'bulletShadow':	true,
 		'shadowColor':	"rgba(0, 0, 0, 0.6)",
 		'fill':			true,
-		'fillColor':	"rgba(255,255,255,0.4)",
+		'fillColor':	"rgba(255,255,255,0.3)",
 		'lineSize':		3,
 		'lineCurve':	true,
 		'lineColor':	"#eee",
@@ -222,14 +226,71 @@ Graph.prototype.drawGrid		= function() {
 		this.context.shadowBlur		= 0;
 	}
 	
+	var dotWeight	= 2;
+	var dotHeight	= ( startY - padding );
+	var dotDiff		= dotHeight / dotWeight;
+	
 	// Move the carrot 1 'distance' further every time.
 	for( var carrot = 0; carrot < length; carrot++ ) {
 		var position	= startX + ( carrot * distance );
-		this.context.beginPath();
-		this.context.moveTo( position, padding );
-		this.context.lineTo( position, startY );
-		this.context.stroke();
+		
+		if( this.options['gridDotted'] && carrot > 0 ) {
+			var dotStart	= padding;
+			
+			this.context.strokeStyle		= this.options['gridColor'];
+			this.context.lineWidth			= this.options['gridSize'];
+			if( this.options['gridShadow'] ) {
+				this.context.shadowOffsetX	= 0;
+				this.context.shadowOffsetY	= 0;
+				this.context.shadowBlur		= 2;
+				this.context.shadowColor	= this.options['shadowColor'];
+			} else {
+				this.context.shadowBlur		= 0;
+			}
+			
+			
+			// Faux dotted system.. not ideal but it works.
+			while( dotStart+dotWeight <= dotHeight+padding ) {
+				this.context.beginPath();
+				this.context.moveTo( position, dotStart );
+				this.context.lineTo( position, dotStart + dotWeight );
+				this.context.stroke();
+				
+				dotStart += ( dotWeight * 2 );
+			}
+		} else {
+			this.context.strokeStyle		= carrot > 0 || this.options['axisColor'] == "auto" ? this.options['gridColor'] : this.options['axisColor'];
+			this.context.lineWidth			= carrot > 0 || this.options['axisSize'] == "auto" ? this.options['gridSize'] : this.options['axisSize'];
+			
+			var useShadow		= carrot > 0 || this.options['axisShadow'] == "auto" ? this.options['gridShadow'] : this.options['axisShadow'];
+			if( useShadow ) {
+				this.context.shadowOffsetX	= 0;
+				this.context.shadowOffsetY	= 0;
+				this.context.shadowBlur		= 2;
+				this.context.shadowColor	= this.options['shadowColor'];
+			} else {
+				this.context.shadowBlur		= 0;
+			}
+			
+			this.context.beginPath();
+			this.context.moveTo( position, padding );
+			this.context.lineTo( position, startY );
+			this.context.stroke();
+		}
 	}
+	
+	var useShadow		= this.options['axisShadow'] == "auto" ? this.options['gridShadow'] : this.options['axisShadow'];
+	if( useShadow ) {
+		this.context.shadowOffsetX	= 0;
+		this.context.shadowOffsetY	= 0;
+		this.context.shadowBlur		= 2;
+		this.context.shadowColor	= this.options['shadowColor'];
+	} else {
+		this.context.shadowBlur		= 0;
+	}
+	
+	this.context.strokeStyle		= this.options['axisColor'] == "auto" ? this.options['gridColor'] : this.options['axisColor'];
+	this.context.lineWidth			= this.options['axisSize'] == "auto" ? this.options['gridSize'] : this.options['axisSize'];
 	
 	// Draw bottom line.
 	this.context.beginPath();
@@ -354,6 +415,7 @@ Graph.prototype.fillLineData		= function( data, color ) {
 	
 	this.context.beginPath();
 	this.context.moveTo( startX, startY );
+	this.context.shadowBlur		= 0;
 	
 	for( var carrot = 0; carrot < bullets.length; carrot++ ) {
 		var bullet		= bullets[carrot];

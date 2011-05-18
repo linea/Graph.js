@@ -111,6 +111,18 @@ The options are available in a simple array form on the graph, you can overwrite
 	graph.options['gridShadow']		= false;
 	// Give the grid a small shadow as well for depth effect.
 	
+	graph.options['gridDotted']		= true;
+	// Give the grid a small shadow as well for depth effect.
+	
+	graph.options['axisSize']		= 1;
+	// The size for the axis lines (left and bottom line). Use "auto" to use the same setting as `gridSize`.
+	
+	graph.options['axisColor']		= "#000";
+	// The color for the axis lines (left and bottom line). Use "auto" to use the same setting as `gridColor`.
+	
+	graph.options['axisShadow']		= false;
+	// The shadow option for the axis lines (left and bottom line). Use "auto" to use the same setting as `gridShadow`.
+	
 	graph.options['bullets']		= true;
 	// Show bullets for the data points from your data array.
 	
