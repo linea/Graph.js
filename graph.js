@@ -85,7 +85,7 @@ Graph.prototype.addLine		= function( data, color ) {
 	var metaData		= [];
 	
 	for( var carrot = 0; carrot < data.length; carrot++ ) {
-		if( typeof(data[carrot]) == "number" ) {
+		if( typeof(data[carrot]) == "number" || typeof(data[carrot]) == "string" ) {
 			dataPoints.push( data[carrot] );
 		} else {
 			var meta		= {};
