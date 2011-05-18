@@ -1,6 +1,6 @@
 /**
  *	Graph.js library
- *		by linea, 2011
+ *		by Linea, 2011
  *
  *	More information is available at: https://github.com/linea/Graph.js
  */
@@ -18,6 +18,8 @@ function Graph( canvas, data, draw ) {
 		'maxValue':		"auto",
 		'padding':		20,
 		'spacing':		20,
+		'border':		0,
+		'borderColor':	"#fff",
 		'background':	["#4E87B5","#86A6C1"],
 		'grid':			true,
 		'gridSize':		1,
@@ -33,7 +35,9 @@ function Graph( canvas, data, draw ) {
 		'fillColor':	"rgba(255,255,255,0.4)",
 		'lineSize':		3,
 		'lineCurve':	true,
-		'lineColor':	"#eee"
+		'lineColor':	"#eee",
+		'useOffset':	true,
+		'valueKey':		'value'
 	};
 	
 	// Initialize.
@@ -73,10 +77,36 @@ Graph.prototype.init		= function( canvas ) {
 
 // Add more data lines.
 Graph.prototype.addLine		= function( data, color ) {
+	var dataPoints		= [];
+	var metaData		= [];
+	
+	for( var carrot = 0; carrot < data.length; carrot++ ) {
+		if( typeof(data[carrot]) == "number" ) {
+			dataPoints.push( data[carrot] );
+		} else {
+			var meta		= {};
+			for( var key in data[carrot] ) {
+				if( data[carrot][key].hasOwnProperty() )
+					continue;
+					
+				meta[key]	= data[carrot][key];
+			}
+			
+			if( typeof(data[carrot][this.options['valueKey']]) == "undefined" ) {
+				alert( "[Graph] invalid meta-data, no '" + this.options['valueKey'] + "' field found." );
+				return;
+			}
+			
+			dataPoints.push( data[carrot][this.options['valueKey']] );
+			metaData.push( meta );
+		}
+	}
+	
 	this.lines.push( {
-		'data':		data,
+		'data':		dataPoints,
 		'color':	color || 'default',
-		'bullets':	[]
+		'bullets':	[],
+		'meta':		metaData
 	} );
 	
 	// We'd probably want to redraw this if it's already drawn.
@@ -146,17 +176,26 @@ Graph.prototype.draw		= function() {
 
 // Draw the background as configured.
 Graph.prototype.drawBackground	= function() {
-	this.context.fillStyle	= this.parseColor( this.options['background'] );
-	this.context.fillRect( 0, 0, this.width, this.height );
+	if( this.options['border'] > 0 ) {
+		this.context.fillStyle	= this.parseColor( this.options['borderColor'] );
+		this.context.fillRect( 0, 0, this.width, this.height );
+		
+		this.context.fillStyle	= this.parseColor( this.options['background'] );
+		this.context.fillRect( this.options['border'], this.options['border'], this.width-(this.options['border']*2), this.height-(this.options['border']*2) );
+	} else {
+		this.context.fillStyle	= this.parseColor( this.options['background'] );
+		this.context.fillRect( 0, 0, this.width, this.height );
+	}
 };
 
 
 // Draw the grid as configured.
 Graph.prototype.drawGrid		= function() {
-	var startX		= this.options['padding'];
-	var startY		= this.height - this.options['padding'];
-	var height		= this.height - ( this.options['padding'] * 2 );
-	var width		= this.width - ( this.options['padding'] * 2 );
+	var padding		= this.options['padding'] + ( this.options['border'] > 0 ? this.options['border'] : 0 );
+	var startX		= padding;
+	var startY		= this.height - padding;
+	var height		= this.height - ( padding * 2 );
+	var width		= this.width - ( padding * 2 );
 	var length		= this.lines[0]['data'].length;
 	var distance	= width;
 	
@@ -187,7 +226,7 @@ Graph.prototype.drawGrid		= function() {
 	for( var carrot = 0; carrot < length; carrot++ ) {
 		var position	= startX + ( carrot * distance );
 		this.context.beginPath();
-		this.context.moveTo( position, this.options['padding'] );
+		this.context.moveTo( position, padding );
 		this.context.lineTo( position, startY );
 		this.context.stroke();
 	}
@@ -202,13 +241,14 @@ Graph.prototype.drawGrid		= function() {
 
 // Draw the bullet points.
 Graph.prototype.drawBulletPoints	= function( data, color ) {
-	var bullets			= data['bullets'];
-	var startX			= this.options['padding'];
-	var startY			= this.height - this.options['padding'];
-	var height			= this.height - ( this.options['padding'] * 2 );
-	var width			= this.width - ( this.options['padding'] * 2 );
-	var length			= bullets.length;
-	var color			= color || "default";
+	var bullets		= data['bullets'];
+	var padding		= this.options['padding'] + ( this.options['border'] > 0 ? this.options['border'] : 0 );
+	var startX		= padding;
+	var startY		= this.height - padding;
+	var height		= this.height - ( padding * 2 );
+	var width		= this.width - ( padding * 2 );
+	var length		= bullets.length;
+	var color		= color || "default";
 	
 	// Set the style.
 	this.context.lineWidth		= this.options['bulletSize'] / 3;
@@ -242,13 +282,14 @@ Graph.prototype.drawBulletPoints	= function( data, color ) {
 
 // Draw the line itself.
 Graph.prototype.drawLineData	= function( data, color ) {
-	var bullets			= data['bullets'];
-	var startX			= this.options['padding'];
-	var startY			= this.height - this.options['padding'];
-	var height			= this.height - ( this.options['padding'] * 2 );
-	var width			= this.width - ( this.options['padding'] * 2 );
-	var length			= bullets.length;
-	var color			= color || "default";
+	var bullets		= data['bullets'];
+	var padding		= this.options['padding'] + ( this.options['border'] > 0 ? this.options['border'] : 0 );
+	var startX		= padding;
+	var startY		= this.height - padding;
+	var height		= this.height - ( padding * 2 );
+	var width		= this.width - ( padding * 2 );
+	var length		= bullets.length;
+	var color		= color || "default";
 	
 	this.context.beginPath();
 	this.context.moveTo( bullets[0].x, bullets[0].y );
@@ -303,12 +344,13 @@ Graph.prototype.drawLineData	= function( data, color ) {
 
 // Fill the line data points.
 Graph.prototype.fillLineData		= function( data, color ) {
-	var bullets			= data['bullets'];
-	var startX			= this.options['padding'];
-	var startY			= this.height - this.options['padding'];
-	var height			= this.height - ( this.options['padding'] * 2 );
-	var width			= this.width - ( this.options['padding'] * 2 );
-	var length			= bullets.length;
+	var bullets		= data['bullets'];
+	var padding		= this.options['padding'] + ( this.options['border'] > 0 ? this.options['border'] : 0 );
+	var startX		= padding;
+	var startY		= this.height - padding;
+	var height		= this.height - ( padding * 2 );
+	var width		= this.width - ( padding * 2 );
+	var length		= bullets.length;
 	
 	this.context.beginPath();
 	this.context.moveTo( startX, startY );
@@ -373,13 +415,14 @@ Graph.prototype.getMaximum			= function( spacing ) {
 
 // Calculate the positions for bullet points (and lines).
 Graph.prototype.calculateBulletPoints		= function( data ) {
-	var startX			= this.options['padding'];
-	var startY			= this.height - this.options['padding'];
-	var height			= this.height - ( this.options['padding'] * 2 );
-	var width			= this.width - ( this.options['padding'] * 2 );
-	var length			= data.length;
-	var minValue		= this.options['minValue'] == "auto" ? this.getMinimum(true) : this.options['minValue'];
-	var maxValue		= this.options['maxValue'] == "auto" ? this.getMaximum(true) : this.options['maxValue'];
+	var padding		= this.options['padding'] + ( this.options['border'] > 0 ? this.options['border'] : 0 );
+	var startX		= padding;
+	var startY		= this.height - padding;
+	var height		= this.height - ( padding * 2 );
+	var width		= this.width - ( padding * 2 );
+	var length		= data.length;
+	var minValue	= this.options['minValue'] == "auto" ? this.getMinimum(true) : this.options['minValue'];
+	var maxValue	= this.options['maxValue'] == "auto" ? this.getMaximum(true) : this.options['maxValue'];
 	
 	var bulletPoints	= [];
 	var distance		= width / ( length - 1 );
@@ -501,10 +544,11 @@ Graph.prototype.redraw		= function() {
 
 // Return the ax X and Y positions for every grid line.
 Graph.prototype.getGridAxes			= function() {
-	var startX		= this.options['padding'];
-	var startY		= this.height - this.options['padding'];
-	var height		= this.height - ( this.options['padding'] * 2 );
-	var width		= this.width - ( this.options['padding'] * 2 );
+	var padding		= this.options['padding'] + ( this.options['border'] > 0 ? this.options['border'] : 0 );
+	var startX		= padding;
+	var startY		= this.height - padding;
+	var height		= this.height - ( padding * 2 );
+	var width		= this.width - ( padding * 2 );
 	var length		= this.lines[0]['data'].length;
 	var distance	= width;
 	var output		= {
@@ -544,6 +588,11 @@ Graph.prototype.getClosestBullet	= function( nearX, magnify ) {
 	var results		= [];
 	var magnify		= magnify === false ? false : true;
 	
+	// If the nearX coordinate is absolute we can transform it to a relative one fairly easy.
+	if( this.options['useOffset'] ) {
+		var nearX		= nearX - this.getOffset().x;
+	}
+	
 	// If we change the appearance of the bullet, redraw first.
 	if( magnify ) {
 		this.redraw();
@@ -552,6 +601,7 @@ Graph.prototype.getClosestBullet	= function( nearX, magnify ) {
 	// Loop through all the lines.
 	for( var lineIndex = 0; lineIndex < this.lines.length; lineIndex++ ) {
 		var bullets		= this.lines[lineIndex]['bullets'];
+		var meta		= this.lines[lineIndex]['meta'];
 		var length		= bullets.length;
 		var closest		= false;
 		var distance	= this.width / ( length - 1 );
@@ -568,9 +618,11 @@ Graph.prototype.getClosestBullet	= function( nearX, magnify ) {
 
 			if( nearX <= ( previous + half ) ) {
 				closest		= carrot == 0 ? bullet : bullets[carrot-1];
+				closest['meta']		= carrot == 0 ? meta[carrot] : meta[carrot-1]; // Append meta data.
 				break;
 			} else {
 				closest		= bullet;
+				closest['meta']		= meta[carrot]; // Append meta data.
 				break;
 			}
 		}
@@ -601,6 +653,25 @@ Graph.prototype.getClosestBullet	= function( nearX, magnify ) {
 	}
 	
 	return results;
+};
+
+
+// Get the offset for the graph (useful for the relative calculations)
+Graph.prototype.getOffset	= function() {
+	var parent		= this.canvas;
+	var padding		= this.options['padding'] + ( this.options['border'] > 0 ? this.options['border'] : 0 );
+	var offset		= {
+		'x':	padding,
+		'y':	padding
+	};
+	
+	while( parent && parent.offsetParent ) {
+		offset['x']		+= parent.offsetLeft;
+		offset['y']		+= parent.offsetTop;
+		parent			= parent.offsetParent;
+	}
+	
+	return offset;
 };
 
 

@@ -69,38 +69,23 @@
 			graph.draw();
 		};
 		</script>
-		<style type="text/css" media="screen">
-			.container { 
-				position: relative;
-				margin: 50px auto 0;
-				width: 800px;
-			}
-			
-			.label {
-				position: absolute;
-				font-size: 11px;
-				font-family: "Lucida Grande", arial, sans-serif;
-				color: #fff;
-				text-shadow: 1px 1px 1px #ff0059;
-				-moz-text-shadow: 1px 1px 1px #ff0059;
-				-webkit-text-shadow: 1px 1px 1px #ff0059;
-				line-height: 16px;
-				margin-top: -18px;
-				margin-left: 4px;
-				user-select: none;
-				-moz-user-select: none;
-				-webkit-user-select: none;
-				cursor: default;
-			}
-		</style>
+		<link rel="stylesheet" type="text/css" href="sample.css" />
 	</head>
 	<body onload="init();">
-		
-		<div class="container">
-			<canvas id="canvas_object" width="800" height="400">
-				Your browser does not support the HTML Canvas object, so... no graph for you!
-			</canvas>
-		</div>
 
+		<div class="container">
+			<div class="heading">
+				<h1>Sample 5. Extend the Graph: with your own labels</h1>
+				<p class="note">By default the Graph.js class does not create labels, what it does do is offer a useful feature so you can add labels yourself at the correct x,y positions.</p>
+			</div>
+
+			<div class="graph">
+				<canvas id="canvas_object" width="700" height="350">
+					Your browser does not support the HTML Canvas object; No graph for you!
+				</canvas>
+				
+				<div id="bubble">n/a</div>
+			</div>
+		</div>
 	</body>
 </html>

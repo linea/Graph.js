@@ -42,7 +42,9 @@
 			graph.options['lineSize']		= 3; // The size of the line.
 			graph.options['lineCurve']		= true; // Do you want the line to curve, or not?
 			graph.options['lineColor']		= "#ff0059"; // Which color is the line (and bullets/bullet outside)
-			
+			graph.options['border']			= 15; // This border is 'inside' the canvas restrictions, same idea as padding except padding leaves the background
+												  // and border will not let the background start at 0,0 but at borderSize,borderSize.
+			graph.options['borderColor']	= "lightyellow"; // By default the border will be just plain white, but maybe you prefer it to be some other color.
 			
 			// Add a line of data points to the graph.
 			graph.addLine( [10,50,20,20,70,30,20,45] );
@@ -51,23 +53,19 @@
 			graph.draw();
 		};
 		</script>
-		<style type="text/css" media="screen">
-			.container { 
-				position: relative;
-				margin: 50px auto 0;
-				width: 800px;
-				
-			}
-		</style>
+		<link rel="stylesheet" type="text/css" href="sample.css" />
 	</head>
 	<body onload="init();">
-		
+
 		<div class="container">
-			<canvas id="canvas_object" width="800" height="400">
-				Your browser does not support the HTML Canvas object, so... no graph for you!
+			<div class="heading">
+				<h1>Sample 2. Options</h1>
+				<p class="note">You can easily configure the style of the graph, to make it fit your own application.</p>
+			</div>
+
+			<canvas id="canvas_object" width="700" height="350">
+				Your browser does not support the HTML Canvas object; No graph for you!
 			</canvas>
 		</div>
-		
-		
 	</body>
 </html>

@@ -19,19 +19,17 @@
 			graph		= new Graph( canvas, [10,20,50,20,30,60,10], true);
 		};
 		</script>
-		<style type="text/css" media="screen">
-			.container { 
-				position: relative;
-				margin: 50px auto 0;
-				width: 800px;
-			}
-		</style>
+		<link rel="stylesheet" type="text/css" href="sample.css" />
 	</head>
 	<body onload="init();">
 		
 		<div class="container">
-			<canvas id="canvas_object" width="800" height="400">
-				Your browser does not support the HTML Canvas object, so... no graph for you!
+			<div class="heading">
+				<h1>Sample 1. Basic Graph</h1>
+			</div>
+			
+			<canvas id="canvas_object" width="700" height="350">
+				Your browser does not support the HTML Canvas object; No graph for you!
 			</canvas>
 		</div>
 	</body>

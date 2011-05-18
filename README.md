@@ -8,6 +8,7 @@ A lightweight JavaScript class for drawing line graphs in a canvas element, that
   
  * Easily configurable / theme support
  * Multiple data lines in different colors
+ * Optionally add meta-data per data point
  * Additional methods to add functionality (e.g. mouseover bubble, html labels)
  * Included a minified version for quick download
 
@@ -36,6 +37,12 @@ Example from examples/sample1_basic.html:
 	<canvas id="canvas_object" width="800" height="400">
 		Your browser does not support the HTML Canvas object, so... no graph for you!
 	</canvas>
+	
+### Meta data 
+
+In some cases you might want to add some more data than just 1 number for a data point. You might want to show both the whole number, and the % that it is at the same time. This is one of the supported options, and it's fairly easy in use as demonstrated in sample7_metadata.html. Instead of an array filled with numeric values, you pass an array with objects - and the key of one of these objects will contain the actual value used to create the graph, the rest will be stored for later use. Which key contains the numeric value is also adjustable, by changing `options['valueKey']`, the default is just value but some people prefer to use another name, or are stuck in a predefined format.
+
+When using `getClosestBullet` the result(s) will contain the meta-data that you entered for it, within the `meta` property. So for example `closest.meta['percentage']` could contain the percentage for the given value.
 
 ## Documentation
 
@@ -84,6 +91,13 @@ The options are available in a simple array form on the graph, you can overwrite
 	// The spacing for top/bottom, only used if minValue/maxValue is auto and could be 0. 
 	// It helps prevent lines from being EXACTLY ON the top/bottom line of graph but adds some spacing.
 	
+	graph.options['border']			= 20;
+	// This border is 'inside' the canvas restrictions, same idea as padding except padding leaves the background
+	// and border will not let the background start at 0,0 but at borderSize,borderSize.
+	
+	graph.options['borderColor']	= "#000";
+	// By default the border will be just plain white, but maybe you prefer it to be some other color.
+	
 	graph.options['background']		= ["#fff","#eee","#ddd"];
 	// Background, either string ('#fff', or 'red') or array with strings representing colors for a gradient.
 	
@@ -131,6 +145,12 @@ The options are available in a simple array form on the graph, you can overwrite
 	
 	graph.options['lineColor']		= "#ff0059";
 	// Which color is the line (and bullets/bullet outside)
+	
+	graph.options['useOffset']		= true;
+	// Tranforms input coordinates (e.g. `mouseX`) to relative coordinates.
+	
+	graph.options['valueKey']		= "value";
+	// When using meta-data, which key contains the actual numeric value.
 
 ### Methods you can use to extend Graph functionality.
 
@@ -154,6 +174,10 @@ Returns the lowest value from all available data points. Useful for multiple thi
 #### getMaximum()
 
 Returns the highest value from all available data points. Useful for multiple things, like manually changing the `maxValue` option.
+
+#### getOffset()
+
+Returns an object with `x`,`y` offset for the `canvas` object, used internally if `options['useOffset']` is enabled, otherwise still useful feature.
 
 ## Minified with YUI! Compressor
 

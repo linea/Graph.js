@@ -50,24 +50,19 @@
 			graph.draw();
 		};
 		</script>
-		<style type="text/css" media="screen">
-			.container { 
-				position: relative;
-				margin: 50px auto 0;
-				width: 800px;
-				
-			}
-		</style>
+		<link rel="stylesheet" type="text/css" href="sample.css" />
 	</head>
 	<body onload="init();">
-		
+
 		<div class="container">
-			<canvas id="canvas_object" width="800" height="400">
-				Your browser does not support the HTML Canvas object, so... no graph for you!
+			<div class="heading">
+				<h1>Sample 3. Multiple data lines</h1>
+				<p class="note">Because sometimes one just isn't enough, for example to compare 2 data types with each other.</p>
+			</div>
+
+			<canvas id="canvas_object" width="700" height="350">
+				Your browser does not support the HTML Canvas object; No graph for you!
 			</canvas>
 		</div>
-		
-		<s>Note: Multi-line currently conflicts a little bit if you add a hover bubble (sample4_mouseover.html), so right now if you do use both together the bubble will only respond to the first data line (which will be the one on the 'back')</s><br />
-		Note: Working multi-line example feature bubble now available in sample6_multiline_mouseover.html.
 	</body>
 </html>

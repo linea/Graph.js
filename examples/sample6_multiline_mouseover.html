@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Graph.js</title>
-		<script type="text/javascript" src="../graph.js"></script>
+		<script type="text/javascript" src="../graph.min.js"></script>
 		<script type="text/javascript">
 		var graph, canvas;	// Make the graph object available globally.
 		
@@ -38,14 +38,12 @@
 			
 			canvas.onmousemove	= function(e) {
 				var e			= e || window.event; // The Event
-				var mouseX		= e.clientX; // The mouse X coordinate.
-				var difference	= graph.options['padding'] + canvas.parentNode.offsetLeft; // The padding (where the graph starts within the canvas) + The left offset from the container.
-				var bulletX		= mouseX - difference; // This is needed to get a relative X, which we can compare to our bullet points.
+				var mouseX		= e.clientX; // The mouse X coordinate, you might need to add the scrollTop to this in your own application.
 				
 				// Now to get the closest bullet, we have a method on our Graph object.
 				// It takes 2 arguments, the first being a X coordinate and that is required.
 				// The second is optional, true or false, to magnify the bullet that is 'active'.
-				var closest		= graph.getClosestBullet( bulletX, true ); 
+				var closest		= graph.getClosestBullet( mouseX, true ); 
 				if( !closest || closest.length == 0 ) {
 					// No close bullet was found (probably mouse-ing outside the graph)
 					document.getElementById("bubble").innerHTML		= "n/a";
@@ -78,52 +76,23 @@
 			}
 		};
 		</script>
-		<style type="text/css" media="screen">
-			.container { 
-				position: relative;
-				margin: 50px auto 0;
-				width: 800px;
-			}
-			
-			#bubble { 
-				position: absolute;
-				display: none;
-				top: 50px;
-				left: 100px;
-				padding: 4px 6px;
-				background: #000;
-				color: #fff;
-				background: rgba(0,0,0,0.6);
-				box-shadow: 1px 1px 3px #5a5a5a;
-				-moz-box-shadow: 1px 1px 3px #5a5a5a;
-				-webkit-box-shadow: 1px 1px 3px #5a5a5a;
-				border-radius: 5px;
-				-moz-border-radius: 5px;
-				-webkit-border-radius: 5px;
-				font-size: 11px;
-				font-family: "Lucida Grande", arial, sans-serif;
-				user-select: none;
-				-moz-user-select: none;
-				-webkit-user-select: none;
-				cursor: default;
-				
-				transition: top 0.2s ease, left 0.2s ease;
-				-moz-transition: top 0.2s ease, left 0.2s ease;
-				-webkit-transition: top 0.2s ease, left 0.2s ease;
-			}
-		</style>
+		<link rel="stylesheet" type="text/css" href="sample.css" />
 	</head>
 	<body onload="init();">
-		
+
 		<div class="container">
-			<canvas id="canvas_object" width="800" height="400">
-				Your browser does not support the HTML Canvas object, so... no graph for you!
-			</canvas>
-			
-			<!-- This empty div is needed for your bubble -->
-			<div id="bubble"></div>
+			<div class="heading">
+				<h1>Sample 6. Multiple data lines, extended with a custom bubble.</h1>
+				<p class="note">You can also combine the previous examples, to create a more powerful graph.</p>
+			</div>
+
+			<div class="graph">
+				<canvas id="canvas_object" width="700" height="350">
+					Your browser does not support the HTML Canvas object; No graph for you!
+				</canvas>
+				
+				<div id="bubble">n/a</div>
+			</div>
 		</div>
-		
-		
 	</body>
 </html>
