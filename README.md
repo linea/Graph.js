@@ -54,14 +54,15 @@ Parameters:
 * `dataPoints`: An array filled with numbers.
 * `draw`: A boolean to start drawing the graph or not, default is false.
 
-#### addLine( dataPoints[, color] )
+#### addLine( dataPoints[, lineColor, fillColor] )
 
-Add a new line with the given dataPoints, and optionally you can give it a new color.
+Add a new line with the given dataPoints, and optionally you can give it a new color. Please note, that combined with multiple data lines you can specify a different fill color for every line - however when they overlap this might not give the desired effect. Please play around with it, `rgba()` colors are also supported.
 
 Parameters:
 
 * `dataPoints`: An array filled with numbers.
-* `color`: A textual representation of a color (e.g. `red`, `#ff0000`, `rgb(255,0,0)`), defaults to the 'default' color.
+* `lineColor`: A textual representation of a color (e.g. `red`, `#ff0000`, `rgb(255,0,0)`), defaults to the 'default' options color.
+* `fillColor`: A textual representation of a color (e.g. `red`, `#ff0000`, `rgb(255,0,0)`), defaults to the 'default' options color.
 
 #### draw()
 
@@ -86,8 +87,7 @@ The options are available in a simple array form on the graph, you can overwrite
 	// The padding from the canvas border to where the grid/graph begins.
 	
 	graph.options['spacing']		= 20; 
-	// The spacing for top/bottom, only used if minValue/maxValue is auto and could be 0. 
-	// It helps prevent lines from being EXACTLY ON the top/bottom line of graph but adds some spacing.
+	// This helps prevent lines from being EXACTLY ON the top/bottom axis line of the graph.
 	
 	graph.options['border']			= 20;
 	// This border is 'inside' the canvas restrictions, same idea as padding except padding leaves the background

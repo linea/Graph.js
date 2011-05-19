@@ -21,27 +21,26 @@
 			
 			// Overwrite styles in the options array for the graph object. 
 			// These are ALL options, default style is visible in 'sample1_basic.html'.
-			graph.options['minValue']		= "auto"; // Will automatically get the lowest number from your data array.
-			graph.options['maxValue']		= "auto"; // Will automatically get the highest number from your data array.
-			graph.options['padding']		= 50; // The padding from the canvas border to where the grid/graph begins.
-			graph.options['spacing']		= 20; // The spacing for top/bottom, only used if minValue/maxValue is auto and could be 0. 
-												  // It helps prevent lines from being EXACTLY ON the top/bottom line of graph but adds some spacing.
-			graph.options['background']		= ["#fff","#eee","#ddd"]; // Background, either string ('#fff', or 'red') or array with strings representing colors for a gradient.
-			graph.options['grid']			= true; // Enable the background lines/grid. Only Vertical and bottom line support for now.
-			graph.options['gridSize']		= 0.5; // The size of the background lines/grid. Can be half as well (0.5)
-			graph.options['gridColor']		= "rgba(0, 0, 0, 0.5 )"; // The color for the background lines/grid.
-			graph.options['gridShadow']		= false; // Give the grid a small shadow as well for depth effect.
-			graph.options['gridDotted']		= true; // Add dots to the grid.
-			graph.options['axisSize']		= 1; // The size of the axis lines, can also be 0.5 (sub pixels)
-			graph.options['axisColor']		= "rgba(130, 130, 130, 1 )"; // The color for the axis lines.
-			graph.options['bulletSize']		= 3; // The radius of the bullet points.
+			graph.options['minValue']	= "auto"; // Will automatically get the lowest number from your data array.
+			graph.options['maxValue']	= "auto"; // Will automatically get the highest number from your data array.
+			graph.options['padding']	= 50; // The padding from the canvas border to where the grid/graph begins.
+			graph.options['spacing']	= 20; // This helps prevent lines from being EXACTLY ON the top/bottom axis line of the graph.
+			graph.options['background']	= ["#fff","#eee","#ddd"]; // Background, either string ('#fff', or 'red') or array with strings representing colors for a gradient.
+			graph.options['grid']		= true; // Enable the background lines/grid. Only Vertical and bottom line support for now.
+			graph.options['gridSize']	= 0.5; // The size of the background lines/grid. Can be half as well (0.5)
+			graph.options['gridColor']	= "rgba(0, 0, 0, 0.5 )"; // The color for the background lines/grid.
+			graph.options['gridShadow']	= false; // Give the grid a small shadow as well for depth effect.
+			graph.options['gridDotted']	= true; // Add dots to the grid.
+			graph.options['axisSize']	= 1; // The size of the axis lines, can also be 0.5 (sub pixels)
+			graph.options['axisColor']	= "rgba(130, 130, 130, 1 )"; // The color for the axis lines.
+			graph.options['bulletSize']	= 3; // The radius of the bullet points.
 			graph.options['bulletColor']	= "#000"; // The inside color of the bullet, only visible if you have 'bulletFill' enabled.
 			graph.options['shadowColor']	= "rgba(0, 0, 0, 0.6)"; // The color for all shadows (grid/bullet/etc)
-			graph.options['fill']			= true; // Do you want to fill the data from line to bottom (nice effect if you use an alpha color)
-			graph.options['fillColor']		= "rgba(255,0,87,0.2)"; // The color, only visible if you enable 'fill'.
-			graph.options['lineSize']		= 2; // The size of the line.
-			graph.options['lineCurve']		= false; // Do you want the line to curve, or not?
-			graph.options['lineColor']		= "#ff0059"; // Which color is the line (and bullets/bullet outside)
+			graph.options['fill']		= true; // Do you want to fill the data from line to bottom (nice effect if you use an alpha color)
+			graph.options['fillColor']	= "rgba(255,0,87,0.2)"; // The color, only visible if you enable 'fill'.
+			graph.options['lineSize']	= 2; // The size of the line.
+			graph.options['lineCurve']	= false; // Do you want the line to curve, or not?
+			graph.options['lineColor']	= "#ff0059"; // Which color is the line (and bullets/bullet outside)
 			
 			
 			// Add a line of data points to the graph.

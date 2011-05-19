@@ -7,6 +7,10 @@
  * Added: new option: `options['axisSize']` to specify the axis line size. (value 'auto' to use Grid setting)
  * Added: new option: `options['axisColor']` to specify the axis line color. (value 'auto' to use Grid setting)
  * Added: new option: `options['axisShadow']` to give the axis line a shadow. (value 'auto' to use Grid setting)
+ * Fixed: `addLine` now accepts a third parameter, the fillColor. Useful for multiple data lines.
+ * Fixed: `options['spacing']` now works as it should with the height instead of changing values.
+ * Changed: the default style options have been changed a bit.
+ * Changed: tabs in graph.js source to 8 spaces instead of 4, to see if Github formats it better then.
 
 ## v0.2 - Released May 18th, 2011
 
