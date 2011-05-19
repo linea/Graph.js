@@ -429,13 +429,15 @@ Graph.prototype.fillLineData		= function( data, color ) {
 		var prevBullet	= typeof(bullets[carrot-1]) != "undefined" ? bullets[carrot-1] : bullet;
 		var nextBullet	= typeof(bullets[carrot+1]) != "undefined" ? bullets[carrot+1] : bullet;
 		
+		// If we have less than 3 points we won't curve the line nicely.
+		if( this.options['lineCurve'] && length < 3 ) {
+			this.options['lineCurve']	= false;
+		}
+		
+		// To curve, or not to curve. That is the question.
 		if( !this.options['lineCurve'] ) {
 			this.context.lineTo( bullet.x, bullet.y );
-		} else {
-			if( length < 3 ) {
-				alert( "[graph] cannot curve lines with less than 3 bullets points." );
-				return false;
-			} else if( carrot == ( bullets.length-1 ) ) {
+		} else {if( carrot == ( bullets.length-1 ) ) {
 				break; // We're done, because this loop was +1 the whole time! MAGIC!
 			}
 			
