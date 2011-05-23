@@ -100,7 +100,16 @@ The options are available in a simple array form on the graph, you can overwrite
 	// Background, either string ('#fff', or 'red') or array with strings representing colors for a gradient.
 	
 	graph.options['grid']			= true;
-	// Enable the background lines/grid. Only Vertical and bottom line support for now.
+	// Enable the background lines/grid.
+	
+	graph.options['gridX']			= true;
+	// Enable or disable the horizontal grid lines.
+	
+	graph.options['gridY']			= true;
+	// Enable or disable the vertical grid lines.
+	
+	graph.options['gridYCount']		= 2;
+	// How many vertical grid lines do you want to show? (if they are enabled).
 	
 	graph.options['gridSize']		= 0.2;
 	// The size of the background lines/grid. Can be half as well (0.5)

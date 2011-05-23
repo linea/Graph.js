@@ -7,6 +7,9 @@
  * Added: new option: `options['axisSize']` to specify the axis line size. (value 'auto' to use Grid setting)
  * Added: new option: `options['axisColor']` to specify the axis line color. (value 'auto' to use Grid setting)
  * Added: new option: `options['axisShadow']` to give the axis line a shadow. (value 'auto' to use Grid setting)
+ * Added: new option: `options['gridYCount']` to define the number of vertical lines (default is 2)
+ * Added: Issue #1: new option: `options['gridX']` to enable/disable the horizontal grid lines.
+ * Added: Issue #1: new option: `options['gridY']` to enable/disable the vertical grid lines.
  * Fixed: `addLine` now accepts a third parameter, the fillColor. Useful for multiple data lines.
  * Fixed: `options['spacing']` now works as it should with the height instead of changing values.
  * Changed: the default style options have been changed a bit.

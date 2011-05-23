@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Graph.js</title>
+	<script type="text/javascript" src="../graph.min.js"></script>
+	<script type="text/javascript">
+	var graph, canvas;	// Make the graph object available globally.
+	
+	function init() {
+		
+		// Get the Canvas element.
+		canvas		= document.getElementById( "canvas_object" );
+		
+		// Create a Graph with data.
+		// First argument: Canvas HTML Node
+		// Second argument: Optional: Array of data points
+		// Third argument: Optional: Immediately draw the graph
+		// graph		= new Graph( canvas, [0,10,20,30,40,50,60,70,80,90,100] );
+		graph		= new Graph( canvas, [78.157,92.105,37.894,120,10,83.333,46.666] );
+		
+		graph.options['spacing']	= 50;
+		// graph.options['gridDotted']	= false;
+		// graph.options['grid']	= false;
+		// graph.options['axis']	= false;
+		// graph.options['gridX']	= false;
+		// graph.options['gridY']	= false;
+		graph.options['gridYCount']	= 2;
+		graph.options['spacing']	= 50;
+		graph.draw();
+		
+		
+		var gridLines	= graph.getGridAxes();
+		for( var i = 0; i < gridLines.y.length; i++ ) {
+			var span	= document.createElement( "span" );
+			span.style.display	= "block";
+			span.style.overflow	= "hidden";
+			span.style.background	= "yellow";
+			span.style.position	= "absolute";
+			span.style.height	= "20px";
+			span.style.width	= "50px";
+			span.style.color	= "red";
+			span.style.left		= gridLines.y[i].x + "px";
+			span.style.top		= gridLines.y[i].y + "px";
+			span.innerHTML		= gridLines.y[i].recommended;
+			canvas.parentNode.appendChild(span);
+			span.style.marginTop	= '-8px';
+			span.style.marginLeft	= '-60px';
+		}
+		
+		
+		// To show the hover bubble, attach these events to the Canvas object.
+		canvas.onmouseout	= function() {
+			document.getElementById("bubble").style.display = "none"; // Hide the bullet.
+			graph.redraw(); // Redraw, to hide the magnified bullet point.
+		};
+		
+		
+		canvas.onmousemove	= function(e) {
+			var e			= e || window.event; // The Event
+			var mouseX		= e.clientX; // The mouse X coordinate, you might need to add the scrollTop to this in your own application.
+			
+			// Now to get the closest bullet, we have a method on our Graph object.
+			// It takes 2 arguments, the first being a X coordinate and that is required.
+			// The second is optional, true or false, to magnify the bullet that is 'active'.
+			var closest		= graph.getClosestBullet( mouseX, true ); 
+			if( !closest ) {
+				// No close bullet was found (probably mouse-ing outside the graph)
+				document.getElementById("bubble").innerHTML		= "n/a";
+				return false;
+			}
+			
+			// Set the HTML for the bubble with the value.
+			document.getElementById("bubble").innerHTML		= closest.value;
+			
+			// Show it at the right coordinates.
+			document.getElementById("bubble").style.display		="block"; // Make it visible.
+			document.getElementById("bubble").style.top			= closest.y + "px"; // Top position of bullet
+			document.getElementById("bubble").style.left		= closest.x + "px"; // Left position of bullet
+			document.getElementById("bubble").style.marginTop	= "-35px"; // Negative top of bubble height + little spacing 
+			document.getElementById("bubble").style.marginLeft	= 0 - ( document.getElementById("bubble").clientWidth / 2 ) + "px"; // Negative margin left of 50% bubble's width.
+		}
+	};
+	</script>
+		<link rel="stylesheet" type="text/css" href="sample.css" />
+	</head>
+	<body onload="init();">
+
+		<div class="container">
+			<div class="heading">
+				<h1>Sample 8. Gridlines</h1>
+				<p class="note">So much freedom! You decide if you see the grid, if you see both x/y lines or just one of them..</p>
+			</div>
+			
+			<div class="graph">
+				<canvas id="canvas_object" width="700" height="350">
+					Your browser does not support the HTML Canvas object; No graph for you!
+				</canvas>
+				
+				<div id="bubble">n/a</div>
+			</div>
+		</div>
+	</body>
+</html>

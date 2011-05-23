@@ -11,6 +11,7 @@ function Graph( canvas, data, draw ) {
 	this.width		= 0;
 	this.height		= 0;
 	this.drawn		= false;
+	this.alerted		= false;
 	
 	// Set the default options.
 	this.options		= {
@@ -18,14 +19,18 @@ function Graph( canvas, data, draw ) {
 		'maxValue':	"auto",
 		'padding':	20,
 		'spacing':	10,
-		'border':	1,
+		'border':	0.5,
 		'borderColor':	"#ddd",
 		'background':	["#fff","#f8f8f8"],
 		'grid':		true,
+		'gridX':	true,
+		'gridY':	true,
+		'gridYCount':	2,
 		'gridSize':	0.5,
 		'gridColor':	"rgb(150, 150, 150 )",
 		'gridShadow':	false,
 		'gridDotted':	true,
+		'axis':		"auto",
 		'axisSize':	"auto",
 		'axisColor':	"auto",
 		'axisShadow':	"auto",
@@ -36,7 +41,7 @@ function Graph( canvas, data, draw ) {
 		'bulletShadow':	false,
 		'shadowColor':	"rgba(0, 0, 0, 0.6)",
 		'fill':		true,
-		'fillColor':	"rgba(138,184,125,0.3)",
+		'fillColor':	["rgba(138,184,125,0.2)","rgba(138,184,125,0.6)"],
 		'lineSize':	3,
 		'lineCurve':	true,
 		'lineColor':	"#8AB87D",
@@ -138,6 +143,17 @@ Graph.prototype.clearLines	= function() {
 
 // Draw the graph as configured.
 Graph.prototype.draw		= function() {
+	if( this.lines.length <= 0 || this.lines[0]['data'].length < 3 ) {
+		if( !this.alerted ) {
+			alert( "[Graph] there is not really enough data for a nice looking graph." );
+			this.alerted	= true;
+		}
+		
+		return false;
+	}
+	
+	// We use this alerted value to avoid double alerts.
+	this.alerted	= false;
 	
 	// Do we need to draw the background?
 	if( this.options['background'] !== false ) {
@@ -147,6 +163,11 @@ Graph.prototype.draw		= function() {
 	// Do we need to draw the grid?
 	if( this.options['grid'] ) {
 		this.drawGrid();
+	}
+	
+	// Do we need to draw the axis?
+	if( this.options['axis'] === true || ( this.options['axis'] == "auto" && this.options['grid'] == true ) ) {
+		this.drawAxis();
 	}
 	
 	// For every line, calculate bullet points and control points (for curving)
@@ -198,6 +219,111 @@ Graph.prototype.drawBackground	= function() {
 
 // Draw the grid as configured.
 Graph.prototype.drawGrid	= function() {
+	if( this.options['gridY'] ) {
+		this.drawGridY();
+	}
+	
+	if( this.options['gridX'] ) {
+		this.drawGridX();
+	}
+};
+
+
+// Draw the axis lines.
+Graph.prototype.drawAxis	= function() {
+	var padding	= this.options['padding'] + ( this.options['border'] > 0 ? this.options['border'] : 0 );
+	var startX	= padding;
+	var startY	= this.height - padding;
+	var height	= this.height - ( padding * 2 );
+	var width	= this.width - ( padding * 2 );
+	var length	= this.lines[0]['data'].length;
+	var distance	= width;
+	
+	
+	this.context.strokeStyle	= this.options['axisColor'] == "auto" ? this.options['gridColor'] : this.options['axisColor'];
+	this.context.lineWidth		= this.options['axisSize'] == "auto" ? this.options['gridSize'] : this.options['axisSize'];
+			
+	var useShadow		= this.options['axisShadow'] == "auto" ? this.options['gridShadow'] : this.options['axisShadow'];
+	if( useShadow ) {
+		this.context.shadowOffsetX	= 0;
+		this.context.shadowOffsetY	= 0;
+		this.context.shadowBlur		= 2;
+		this.context.shadowColor	= this.options['shadowColor'];
+	} else {
+		this.context.shadowBlur		= 0;
+	}
+	
+	// Draw side line.
+	this.context.beginPath();
+	this.context.moveTo( startX, padding );
+	this.context.lineTo( startX, startY );
+	this.context.stroke();
+	
+	// Draw bottom line.
+	this.context.beginPath();
+	this.context.moveTo( startX, startY );
+	this.context.lineTo( ( this.width - startX ), startY );
+	this.context.stroke();
+};
+
+
+// Draw the x- grid lines.
+Graph.prototype.drawGridY	= function() {
+	var padding	= this.options['padding'] + ( this.options['border'] > 0 ? this.options['border'] : 0 );
+	var startX	= padding;
+	var startY	= this.height - padding;
+	var height	= this.height - ( padding * 2 );
+	var width	= this.width - ( padding * 2 );
+	var length	= this.options['gridYCount'];
+	var distance	= height;
+	
+	// Calculate the distance for the grid.
+	distance	= distance / ( length + 1 )
+	
+	// Set the grid style.
+	this.context.strokeStyle		= this.options['gridColor'];
+	this.context.lineWidth			= this.options['gridSize'];
+	if( this.options['gridShadow'] ) {
+		this.context.shadowOffsetX	= 0;
+		this.context.shadowOffsetY	= 0;
+		this.context.shadowBlur		= 2;
+		this.context.shadowColor	= this.options['shadowColor'];
+	} else {
+		this.context.shadowBlur		= 0;
+	}
+	
+	var dotWeight	= 2;
+	var dotWidth	= ( width - startX ) + padding; //1000; // startY - padding
+	var dotDiff	= dotWidth / dotWeight;
+	
+	// Move the carrot 1 'distance' further every time.
+	for( var carrot = 0; carrot < length; carrot++ ) {
+		var position	= startX + ( (carrot+1) * distance );
+		
+		if( this.options['gridDotted'] ) {
+			var dotStart	= padding;
+			
+			// Faux dotted system.. not ideal but it works.
+			while( dotStart+dotWeight <= dotWidth+padding ) {
+				this.context.beginPath();
+				this.context.moveTo( dotStart, position );
+				this.context.lineTo( dotStart + dotWeight, position );
+				this.context.stroke();
+				
+				dotStart += ( dotWeight * 2 );
+			}
+		} else {
+			this.context.beginPath();
+			this.context.moveTo( startX, position );
+			this.context.lineTo( width+padding, position );
+			this.context.stroke();
+		}
+	}
+};
+
+
+// Draw the x-grid lines.
+Graph.prototype.drawGridX	= function() {
 	var padding	= this.options['padding'] + ( this.options['border'] > 0 ? this.options['border'] : 0 );
 	var startX	= padding;
 	var startY	= this.height - padding;
@@ -231,13 +357,13 @@ Graph.prototype.drawGrid	= function() {
 	
 	var dotWeight	= 2;
 	var dotHeight	= ( startY - padding );
-	var dotDiff		= dotHeight / dotWeight;
+	var dotDiff	= dotHeight / dotWeight;
 	
 	// Move the carrot 1 'distance' further every time.
-	for( var carrot = 0; carrot < length; carrot++ ) {
+	for( var carrot = 1; carrot < length-1; carrot++ ) {
 		var position	= startX + ( carrot * distance );
 		
-		if( this.options['gridDotted'] && carrot > 0 ) {
+		if( this.options['gridDotted'] ) {
 			var dotStart	= padding;
 			
 			this.context.strokeStyle	= this.options['gridColor'];
@@ -262,10 +388,10 @@ Graph.prototype.drawGrid	= function() {
 				dotStart += ( dotWeight * 2 );
 			}
 		} else {
-			this.context.strokeStyle	= carrot > 0 || this.options['axisColor'] == "auto" ? this.options['gridColor'] : this.options['axisColor'];
-			this.context.lineWidth		= carrot > 0 || this.options['axisSize'] == "auto" ? this.options['gridSize'] : this.options['axisSize'];
+			this.context.strokeStyle	= this.options['gridColor'];
+			this.context.lineWidth		= this.options['gridSize'];
 			
-			var useShadow		= carrot > 0 || this.options['axisShadow'] == "auto" ? this.options['gridShadow'] : this.options['axisShadow'];
+			var useShadow		= this.options['gridShadow'];
 			if( useShadow ) {
 				this.context.shadowOffsetX	= 0;
 				this.context.shadowOffsetY	= 0;
@@ -281,25 +407,6 @@ Graph.prototype.drawGrid	= function() {
 			this.context.stroke();
 		}
 	}
-	
-	var useShadow		= this.options['axisShadow'] == "auto" ? this.options['gridShadow'] : this.options['axisShadow'];
-	if( useShadow ) {
-		this.context.shadowOffsetX	= 0;
-		this.context.shadowOffsetY	= 0;
-		this.context.shadowBlur		= 2;
-		this.context.shadowColor	= this.options['shadowColor'];
-	} else {
-		this.context.shadowBlur		= 0;
-	}
-	
-	this.context.strokeStyle	= this.options['axisColor'] == "auto" ? this.options['gridColor'] : this.options['axisColor'];
-	this.context.lineWidth		= this.options['axisSize'] == "auto" ? this.options['gridSize'] : this.options['axisSize'];
-	
-	// Draw bottom line.
-	this.context.beginPath();
-	this.context.moveTo( startX, startY );
-	this.context.lineTo( ( this.width - startX ), startY );
-	this.context.stroke();
 };
 
 
@@ -455,7 +562,7 @@ Graph.prototype.fillLineData		= function( data, color ) {
 	
 	this.context.lineTo( startX + width, startY );
 	this.context.lineTo( startX, startY );
-	this.context.fillStyle		= color;
+	this.context.fillStyle		= this.parseColor( color );
 	this.context.fill();
 };
 
@@ -615,6 +722,7 @@ Graph.prototype.redraw		= function() {
 // Return the ax X and Y positions for every grid line.
 Graph.prototype.getGridAxes			= function() {
 	var padding	= this.options['padding'] + ( this.options['border'] > 0 ? this.options['border'] : 0 );
+	var spacing	= this.options['spacing'];
 	var startX	= padding;
 	var startY	= this.height - padding;
 	var height	= this.height - ( padding * 2 );
@@ -623,7 +731,7 @@ Graph.prototype.getGridAxes			= function() {
 	var distance	= width;
 	var output	= {
 		'x':	[],
-		'y':	'not yet supported'
+		'y':	[]
 	};
 	
 	// Do we have more values?
@@ -634,10 +742,8 @@ Graph.prototype.getGridAxes			= function() {
 		}
 	}
 	
-	// Calculate the distance for the grid.
+	// Calculate the distance for the x-grid lines.
 	distance	= distance / ( length - 1 );
-	
-	
 	
 	// Move the carrot 1 'distance' further every time.
 	for( var carrot = 0; carrot < length; carrot++ ) {
@@ -648,12 +754,34 @@ Graph.prototype.getGridAxes			= function() {
 		} );
 	}
 	
+	
+	// Calculate the distance for the y-grid lines.
+	var lengthY	= this.options['gridYCount'];
+	var distance	= height / ( lengthY + 1 );
+	var minValue	= this.getMinimum();
+	var maxValue	= this.getMaximum();
+	var difference	= maxValue - minValue;
+	var stepValue	= ( difference / (lengthY+1) );
+	var realHeight	= height - (spacing*2);
+	
+	var realValue	= (stepValue / realHeight)*spacing;
+	
+	// Move the carrot 1 'distance' further every time.
+	for( var carrot = 0; carrot < lengthY; carrot++ ) {
+		var position	= startX + ( (carrot+1) * distance );
+		
+		output['y'].push( {
+			'y':		position,
+			'x':		startX,
+			'recommended':	minValue + ( (lengthY-carrot) * (stepValue) ) + realValue - ( realValue * (carrot*lengthY) )
+		} );
+	}
+	
 	return output;
 };
 
 
-// Get the closet bullet by the X coordinate. Right now only works
-// for the 1st / primary data line.
+// Get the closet bullet by the X coordinate.
 Graph.prototype.getClosestBullet	= function( nearX, magnify ) {
 	var results	= [];
 	var magnify	= magnify === false ? false : true;
